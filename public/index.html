@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SkidChecker</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Azeret+Mono:wght@400;500;700&family=Sora:wght@400;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="ambient ambient-a"></div>
+    <div class="ambient ambient-b"></div>
+
+    <div class="page-shell">
+      <nav class="topbar card">
+        <a class="brand" href="#scan">SkidChecker</a>
+        <div class="nav-links">
+          <a href="#scan">Scan</a>
+          <a href="#methodology">Methodology</a>
+          <a href="#checks-reference">Checks</a>
+        </div>
+      </nav>
+
+      <header class="hero card">
+        <div class="hero-copy">
+          <p class="eyebrow">Minecraft Mod Triage</p>
+          <h1>Minecraft mod analysis with a clear, analyst-focused report.</h1>
+          <p class="lede">
+            Upload a mod jar to decompile its contents, evaluate suspicious behavior, track scan progress in real time, and review confidence-scored detection results.
+          </p>
+          <div class="hero-badges">
+            <span>FernFlower compatible</span>
+            <span>No code execution</span>
+            <span>GitHub Pages browser mode</span>
+          </div>
+        </div>
+
+        <aside class="hero-panel">
+          <div class="hero-stat">
+            <span>Analysis engine</span>
+            <strong id="fernflower-status">Checking...</strong>
+          </div>
+          <div class="hero-stat">
+            <span>Scan mode</span>
+            <strong>Static source analysis</strong>
+          </div>
+          <div class="hero-stat">
+            <span>Critical indicator</span>
+            <strong>method_1674() access</strong>
+          </div>
+        </aside>
+      </header>
+
+      <main class="dashboard" id="scan">
+        <section class="stack">
+          <section class="card upload-card">
+            <div class="section-topline">
+              <p class="eyebrow">Upload</p>
+              <span class="panel-tag">Jar only</span>
+            </div>
+
+            <form id="scan-form">
+              <label class="dropzone" for="modJar">
+                <input id="modJar" name="modJar" type="file" accept=".jar" required />
+                <span class="drop-icon"></span>
+                <span class="dropzone-title">Upload a Minecraft mod jar</span>
+                <span class="dropzone-subtitle">Decompile with Vineflower and evaluate the result with rule-based malware triage</span>
+                <span class="selected-file" id="selected-file">No file selected</span>
+              </label>
+              <button id="submit-button" type="submit">Start analysis</button>
+            </form>
+
+            <p class="hint">
+              Uploaded jars are never executed. SkidChecker decompiles the archive and evaluates the generated source only.
+            </p>
+          </section>
+
+          <section class="card progress-card">
+            <div class="section-topline">
+              <p class="eyebrow">Scan Progress</p>
+              <span class="panel-tag" id="progress-label">Idle</span>
+            </div>
+
+            <div class="progress-header">
+              <div>
+                <h2 id="scan-stage">Waiting for analysis</h2>
+                <p id="scan-detail" class="hint">Upload a jar to begin decompilation and automated rule evaluation.</p>
+              </div>
+              <div class="progress-ring-wrap">
+                <div class="progress-ring" id="progress-ring">
+                  <strong id="progress-value">0%</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="progress-track" aria-hidden="true">
+              <div class="progress-fill" id="progress-fill"></div>
+            </div>
+
+            <div id="progress-steps" class="step-list"></div>
+          </section>
+        </section>
+
+        <section class="stack">
+          <section class="card result-card" id="result-card">
+            <div class="section-topline">
+              <p class="eyebrow">Verdict</p>
+              <span class="panel-tag" id="result-status">No result yet</span>
+            </div>
+
+            <div class="result-hero">
+              <div>
+                <h2 id="result-title">No file analyzed yet</h2>
+                <p class="hint" id="result-summary">Verdict, family, certainty, and highest-confidence detections will appear here after analysis.</p>
+              </div>
+              <div class="score-cluster">
+                <div class="score-pill" id="score-pill">0</div>
+                <div class="certainty-block">
+                  <span class="summary-label">Certainty</span>
+                  <strong id="certainty-value">0%</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="summary-grid">
+              <div>
+                <span class="summary-label">Verdict</span>
+                <strong id="verdict-value">Idle</strong>
+              </div>
+              <div>
+                <span class="summary-label">Primary family</span>
+                <strong id="family-value">-</strong>
+              </div>
+              <div>
+                <span class="summary-label">Source files</span>
+                <strong id="files-value">-</strong>
+              </div>
+              <div>
+                <span class="summary-label">Matched checks</span>
+                <strong id="checks-value">-</strong>
+              </div>
+            </div>
+          </section>
+
+          <section class="card detections-card">
+            <div class="section-topline">
+              <p class="eyebrow">Detections</p>
+              <span class="panel-tag">Highest confidence first</span>
+            </div>
+            <div id="detections" class="detections empty-state">
+              No detections to display yet.
+            </div>
+          </section>
+
+          <section class="card checks-card">
+            <div class="section-topline">
+              <p class="eyebrow">Check Matrix</p>
+              <span class="panel-tag">Confidence weighted</span>
+            </div>
+            <div id="checks-grid" class="checks-grid empty-state">
+              The full rule list and per-check certainty appear here after a scan.
+            </div>
+          </section>
+        </section>
+      </main>
+
+      <section class="info-grid">
+        <section class="card info-card" id="methodology">
+          <div class="section-topline">
+            <p class="eyebrow">About</p>
+            <span class="panel-tag">Transparency</span>
+          </div>
+          <h2>How SkidChecker evaluates Minecraft mods</h2>
+          <p class="hint">
+            SkidChecker is a static analysis tool designed for rapid Minecraft mod triage. It does not execute uploaded jars. Instead, it decompiles the archive, inspects the resulting source, and scores detections using severity-weighted rules and confidence values.
+          </p>
+          <div class="info-points">
+            <article>
+              <strong>Static only</strong>
+              <p class="hint">Submitted jars are decompiled and reviewed as source text. No runtime execution or sandbox detonation is performed.</p>
+            </article>
+            <article>
+              <strong>Browser-mode support</strong>
+              <p class="hint">On GitHub Pages, SkidChecker can inspect jar contents directly in the browser without a backend. A hosted API remains optional for deeper server-side analysis.</p>
+            </article>
+            <article>
+              <strong>Confidence-scored rules</strong>
+              <p class="hint">Each check includes a confidence level and rationale so results can be interpreted with appropriate caution.</p>
+            </article>
+            <article>
+              <strong>Analyst review remains important</strong>
+              <p class="hint">SkidChecker is intended to support review and prioritization, not replace manual inspection for high-risk samples.</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="card info-card" id="checks-reference">
+          <div class="section-topline">
+            <p class="eyebrow">Checks Reference</p>
+            <span class="panel-tag">Public catalog</span>
+          </div>
+          <h2>What the checks look for</h2>
+          <p class="hint">
+            The catalog below describes the current detection set, what each rule is designed to identify, and why it matters during mod review.
+          </p>
+          <div id="catalog-grid" class="catalog-grid empty-state">
+            The check catalog is loading.
+          </div>
+        </section>
+      </section>
+    </div>
+
+    <template id="step-template">
+      <article class="step-item">
+        <span class="step-dot"></span>
+        <div>
+          <div class="step-title-row">
+            <strong class="step-title"></strong>
+            <span class="step-confidence"></span>
+          </div>
+          <p class="step-detail"></p>
+        </div>
+      </article>
+    </template>
+
+    <template id="detection-template">
+      <article class="detection">
+        <div class="detection-topline">
+          <span class="severity"></span>
+          <strong class="family"></strong>
+          <span class="confidence"></span>
+        </div>
+        <h3 class="detection-title"></h3>
+        <p class="description"></p>
+        <p class="rationale"></p>
+        <p class="file"></p>
+        <pre class="snippet"></pre>
+      </article>
+    </template>
+
+    <template id="check-template">
+      <article class="check-card">
+        <div class="check-topline">
+          <strong class="check-label"></strong>
+          <span class="check-state"></span>
+        </div>
+        <div class="check-meta">
+          <span class="check-severity"></span>
+          <span class="check-family"></span>
+        </div>
+        <div class="confidence-bar"><span></span></div>
+        <div class="check-confidence-row">
+          <span>Confidence</span>
+          <strong class="check-confidence"></strong>
+        </div>
+        <p class="check-rationale"></p>
+        <p class="check-evidence"></p>
+      </article>
+    </template>
+
+    <template id="catalog-template">
+      <article class="catalog-card">
+        <div class="catalog-topline">
+          <strong class="catalog-label"></strong>
+          <span class="catalog-severity"></span>
+        </div>
+        <div class="check-meta">
+          <span class="catalog-family"></span>
+          <span class="catalog-confidence"></span>
+        </div>
+        <p class="catalog-description"></p>
+        <p class="catalog-rationale"></p>
+      </article>
+    </template>
+
+    <script src="./config.js"></script>
+    <script type="module" src="./app.js"></script>
+  </body>
+  </html>

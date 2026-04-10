@@ -1,0 +1,20 @@
+{
+  "name": "skidchecker",
+  "version": "1.0.0",
+  "description": "Local malware triage website for Minecraft mod jars using FernFlower decompilation.",
+  "type": "module",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "dependencies": {
+    "adm-zip": "^0.5.16",
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "multer": "^2.0.0"
+  }
+}
